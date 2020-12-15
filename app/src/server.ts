@@ -5,7 +5,6 @@ import * as sapper from '@sapper/server';
 
 const { PORT, NODE_ENV } = process.env;
 const dev = NODE_ENV === 'development';
-const fire = NODE_ENV === 'firebase';
 
 const beastmaster = express() // You can also use Express
 	.use(
@@ -13,7 +12,7 @@ const beastmaster = express() // You can also use Express
 		sirv('static', { dev }),
 		sapper.middleware()
   );
-if (!fire) {
+if (dev) {
 	beastmaster.listen(PORT, () => {
 		console.log(`The server is up at port ${PORT}`);
 	});
