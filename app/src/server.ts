@@ -18,3 +18,5 @@ if (!fire) {
 		console.log(`The server is up at port ${PORT}`);
 	});
 }
+
+export { beastmaster };
