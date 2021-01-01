@@ -17,20 +17,33 @@
 	export let pid;
 
 	let container;
-  	let editor;
+	let monaco;
+	let editor;
+	let langs = [];
+	let selectedLang;
 
 	onMount(async () => {
-		const monaco = await import('monaco-editor');
+		monaco = await import('monaco-editor');
 		let options: monaco.editor.IStandaloneEditorConstructionOptions = {
 			value: pid,
-			language: "javascript",
+			language: "plaintext",
 			lineNumbers: "on",
 			roundedSelection: false,
 			scrollBeyondLastLine: false,
 			readOnly: false,
 			theme: "vs-dark",
+			wordWrap: "on"
 		}
 		editor = monaco.editor.create(container, options);
+		monaco.languages.getLanguages().forEach(lang => {
+			editor.addAction({
+				id: "select-language-" + lang.id,
+				label: "Language: " + lang.id.toUpperCase(),
+				run: async () => {
+					monaco.editor.setModelLanguage(editor.getModel(), lang);
+				},
+			});
+		});
 	});
 </script>
 <style>
@@ -41,5 +54,4 @@
 <svelte:head>
 	<title>olO Note</title>
 </svelte:head>
-
 <div class="editor-container" bind:this={container}></div>
