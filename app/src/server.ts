@@ -10,7 +10,11 @@ const beastmaster = express()
 	.use(
 		compression({ threshold: 0 }),
 		sirv('static', { dev }),
-		sapper.middleware()
+		sapper.middleware({
+			session: (req, res) => ({
+				pid: false
+			})
+		})
 	);
 	if (dev) {
 		beastmaster.listen(PORT, () => {

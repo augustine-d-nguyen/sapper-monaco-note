@@ -1,21 +1,14 @@
-<script lang="ts">
-	import Nav from '../components/Nav.svelte';
-
-	export let segment: string;
-</script>
-
 <style>
 	main {
-		position: relative;
-		max-width: 56em;
-		background-color: white;
-		padding: 2em;
+		position: fixed;
+		width: 100vw;
+		background-color: #1e1e1e;
+		padding: 2rem 0;
 		margin: 0 auto;
 		box-sizing: border-box;
+		height: 100vh;
 	}
 </style>
-
-<Nav {segment}/>
 
 <main>
 	<slot></slot>

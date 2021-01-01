@@ -1,6 +1,7 @@
 const webpack = require('webpack');
 const WebpackModules = require('webpack-modules');
 const sveltePreprocess = require('svelte-preprocess');
+const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 const path = require('path');
 const config = require('sapper/config/webpack.js');
 const pkg = require('./package.json');
@@ -12,7 +13,7 @@ const alias = { svelte: path.resolve('node_modules', 'svelte') };
 const extensions = ['.mjs', '.js', '.ts', '.json', '.svelte', '.html'];
 const mainFields = ['svelte', 'module', 'browser', 'main'];
 const fileLoaderRule = {
-	test: /\.(png|jpe?g|gif)$/i,
+	test: /\.(png|jpe?g|gif|ttf)$/i,
 	use: [
 		'file-loader',
 	]
@@ -20,7 +21,14 @@ const fileLoaderRule = {
 
 module.exports = {
 	client: {
-		entry: { main: config.client.entry().main.replace(/\.js$/, '.ts') },
+		entry: { 
+			main: config.client.entry().main.replace(/\.js$/, '.ts'),
+			'editor.worker': 'monaco-editor/esm/vs/editor/editor.worker.js',
+			'json.worker': 'monaco-editor/esm/vs/language/json/json.worker',
+			'css.worker': 'monaco-editor/esm/vs/language/css/css.worker',
+			'html.worker': 'monaco-editor/esm/vs/language/html/html.worker',
+			'ts.worker': 'monaco-editor/esm/vs/language/typescript/ts.worker'
+		},
 		output: config.client.output(),
 		resolve: { alias, extensions, mainFields },
 		module: {
@@ -41,6 +49,10 @@ module.exports = {
 						}
 					}
 				},
+				{
+					test: /\.css$/,
+					use: ['style-loader', 'css-loader']
+				},
 				fileLoaderRule
 			]
 		},
@@ -52,6 +64,7 @@ module.exports = {
 				'process.browser': true,
 				'process.env.NODE_ENV': JSON.stringify(mode)
 			}),
+			new MonacoWebpackPlugin()
 		].filter(Boolean),
 		devtool: dev && 'inline-source-map'
 	},
@@ -81,12 +94,17 @@ module.exports = {
 						}
 					}
 				},
+				// {
+				// 	test: /\.css$/,
+				// 	use: ['style-loader', 'css-loader']
+				// },
 				fileLoaderRule
 			]
 		},
 		mode,
 		plugins: [
-			new WebpackModules()
+			new WebpackModules(),
+			// new MonacoWebpackPlugin()
 		],
 		performance: {
 			hints: false // it doesn't matter if server.js is large
