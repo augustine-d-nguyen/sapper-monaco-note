@@ -19,8 +19,6 @@
 	let container;
 	let monaco;
 	let editor;
-	let langs = [];
-	let selectedLang;
 
 	onMount(async () => {
 		monaco = await import('monaco-editor');
@@ -39,12 +37,24 @@
 			editor.addAction({
 				id: "select-language-" + lang.id,
 				label: "Language: " + lang.id.toUpperCase(),
-				run: async () => {
-					monaco.editor.setModelLanguage(editor.getModel(), lang);
-				},
+				run: function() {
+					monaco.editor.setModelLanguage(editor.getModel(), lang.id);
+				}
 			});
 		});
+		// - Add save menu
+		editor.addAction({
+			id: "save-this-note",
+			label: "Save",
+			contextMenuGroupId: '9_cutcopypaste',
+			contextMenuOrder: '0',
+			run: saveNote
+		});
 	});
+
+	async function saveNote() {
+		console.log(editor.getValue());
+	}
 </script>
 <style>
 	.editor-container {

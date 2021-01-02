@@ -13,10 +13,14 @@
     "deploy": "yarn build && yarn clean && yarn copy"
   },
   "dependencies": {
+    "body-parser": "^1.19.0",
     "compression": "^1.7.1",
+    "cookie-parser": "^1.4.5",
     "express": "^4.17.1",
+    "firebase-admin": "^9.4.2",
     "md5": "^2.3.0",
     "monaco-editor": "^0.21.2",
+    "node-fetch": "^2.6.1",
     "polka": "next",
     "sirv": "^1.0.0"
   },
@@ -27,7 +31,10 @@
     "@types/polka": "^0.5.1",
     "css-loader": "^5.0.1",
     "file-loader": "^6.0.0",
+    "mkdirp": "^1.0.4",
     "monaco-editor-webpack-plugin": "^2.1.0",
+    "ncp": "^2.0.0",
+    "rimraf": "^3.0.2",
     "sapper": "^0.28.0",
     "style-loader": "^2.0.0",
     "svelte": "^3.17.3",

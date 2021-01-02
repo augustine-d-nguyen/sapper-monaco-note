@@ -5,10 +5,11 @@
 	const { session } = stores();
 	let noteName;
 
-	function gotoNote() {
+	async function gotoNote() {
 		let hashName = md5(noteName);
 		$session.pid = hashName;
-		goto('/note');
+		console.log('goto note');
+		goto('note');
 	}
 </script>
 
