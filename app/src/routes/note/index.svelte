@@ -25,12 +25,14 @@
 </script>
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import AlertBox from '../../components/AlertBox.svelte';
 
 	export let pid, data;
 
 	let container;
 	let monaco;
 	let editor;
+	let notifier;
 
 	onMount(async () => {
 		monaco = await import('monaco-editor');
@@ -42,7 +44,8 @@
 			scrollBeyondLastLine: false,
 			readOnly: false,
 			theme: "vs-dark",
-			wordWrap: "on"
+			wordWrap: "on",
+			automaticLayout: true
 		}
 		editor = monaco.editor.create(container, options);
 		monaco.languages.getLanguages().forEach(lang => {
@@ -76,9 +79,12 @@
 		});
 		const sdata = await res.json();
 		if (res.status !== 200) {
-			this.error(res.status, data.message);
+			// this.error(res.status, data.message);
+			notifier.err('Something\'s wrong!');
+		} else {
+			// console.log('save successfully');
+			notifier.info('Save successfully!');
 		}
-		console.log(sdata);
 	}
 </script>
 <style>
@@ -90,3 +96,4 @@
 	<title>olO Note</title>
 </svelte:head>
 <div class="editor-container" bind:this={container}></div>
+<AlertBox bind:this={notifier}/>

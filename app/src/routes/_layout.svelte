@@ -1,6 +1,6 @@
 <style>
 	main {
-		position: fixed;
+		/* position: fixed; */
 		width: 100vw;
 		background-color: #1e1e1e;
 		padding: 2rem 0;

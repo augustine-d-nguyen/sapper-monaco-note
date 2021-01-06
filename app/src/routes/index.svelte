@@ -8,7 +8,7 @@
 	async function gotoNote() {
 		let hashName = md5(noteName);
 		$session.pid = hashName;
-		console.log('goto note');
+		// console.log('goto note');
 		goto('note');
 	}
 </script>
