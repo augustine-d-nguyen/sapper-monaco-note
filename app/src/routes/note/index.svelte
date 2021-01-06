@@ -7,14 +7,26 @@
 		if (!pid) {
 			return this.redirect(302, '/');
 		}
-		// - Load data from firebase.
-		return { pid };
+		const res = await this.fetch(`note.json`, {
+			method: 'POST',
+            credentials: 'same-origin',
+            body: JSON.stringify({ pid }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+		});
+		const data = await res.json();
+		if (res.status === 200) {
+			return { pid, data };
+		} else {
+			this.error(res.status, data.message);
+		}
 	}
 </script>
 <script lang="ts">
 	import { onMount } from 'svelte';
 
-	export let pid;
+	export let pid, data;
 
 	let container;
 	let monaco;
@@ -23,7 +35,7 @@
 	onMount(async () => {
 		monaco = await import('monaco-editor');
 		let options: monaco.editor.IStandaloneEditorConstructionOptions = {
-			value: pid,
+			value: data.ndata,
 			language: "plaintext",
 			lineNumbers: "on",
 			roundedSelection: false,
@@ -53,7 +65,20 @@
 	});
 
 	async function saveNote() {
-		console.log(editor.getValue());
+		let ndata = editor.getValue()
+		const res = await fetch(`note.json`, {
+			method: 'PUT',
+            credentials: 'same-origin',
+            body: JSON.stringify({ pid, ndata }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+		});
+		const sdata = await res.json();
+		if (res.status !== 200) {
+			this.error(res.status, data.message);
+		}
+		console.log(sdata);
 	}
 </script>
 <style>
