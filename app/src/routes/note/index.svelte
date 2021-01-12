@@ -2,37 +2,47 @@
 	import type { Preload } from "@sapper/common";
 
 	export const preload: Preload = async function(this, page, session) {
-		const { pid } = session;
+		const { pid, pwd } = session;
 
 		if (!pid) {
-			return this.redirect(302, '/');
+			return this.redirect(302, '');
 		}
 		const res = await this.fetch(`note.json`, {
 			method: 'POST',
             credentials: 'same-origin',
-            body: JSON.stringify({ pid }),
+            body: JSON.stringify({ pid, pwd }),
             headers: {
                 'Content-Type': 'application/json'
             }
 		});
 		const data = await res.json();
 		if (res.status === 200) {
-			return { pid, data };
+			return { data };
 		} else {
 			this.error(res.status, data.message);
 		}
 	}
 </script>
 <script lang="ts">
+	import md5 from 'md5';
 	import { onMount } from 'svelte';
+	import { stores } from '@sapper/app';
 	import AlertBox from '../../components/AlertBox.svelte';
+	import SaveBox from '../../components/SaveBox.svelte';
 
-	export let pid, data;
+	const { session } = stores();
+
+	export let data;
 
 	let container;
 	let monaco;
 	let editor;
 	let notifier;
+	let saver;
+	let contextPos;
+
+	let showSaver = false;
+	let oldPrivacy = 'Public';
 
 	onMount(async () => {
 		monaco = await import('monaco-editor');
@@ -63,28 +73,49 @@
 			label: "Save",
 			contextMenuGroupId: '9_cutcopypaste',
 			contextMenuOrder: '0',
-			run: saveNote
+			run: openSaver
+		});
+		// - Get position of context menu
+		editor.onContextMenu((e) => {
+			showSaver = false;
+			contextPos = e.event.pos;
+		});
+		editor.onMouseDown((e) => {
+			// console.log(e);
+			showSaver = false;
 		});
 	});
 
-	async function saveNote() {
-		let ndata = editor.getValue()
+	async function openSaver() {
+		oldPrivacy = $session.privacy;
+		showSaver = true;
+	}
+
+	async function saveNote(event) {
+		let ndata = editor.getValue();
+		let pid = $session.pid;
+		let pwd = '';
+		let privacy = event.detail.privacy;
+		if (oldPrivacy !== 'Public' || privacy !== 'Public') {
+			pwd = md5(event.detail.pwd);
+		}
 		const res = await fetch(`note.json`, {
 			method: 'PUT',
             credentials: 'same-origin',
-            body: JSON.stringify({ pid, ndata }),
+            body: JSON.stringify({ pid, pwd, privacy, ndata }),
             headers: {
                 'Content-Type': 'application/json'
             }
 		});
 		const sdata = await res.json();
 		if (res.status !== 200) {
-			// this.error(res.status, data.message);
-			notifier.err('Something\'s wrong!');
+			notifier.err(sdata.message);
+			// error(res.status, sdata.message);
 		} else {
 			// console.log('save successfully');
 			notifier.info('Save successfully!');
 		}
+		showSaver = false;
 	}
 </script>
 <style>
@@ -95,5 +126,9 @@
 <svelte:head>
 	<title>olO Note</title>
 </svelte:head>
-<div class="editor-container" bind:this={container}></div>
+{#if showSaver}
+	<SaveBox bind:this={saver} on:submit={saveNote} privacy={oldPrivacy} pos={contextPos}/>
+{/if}
+<div class="editor-container" bind:this={container}>
+</div>
 <AlertBox bind:this={notifier}/>

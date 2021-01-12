@@ -1,40 +1,42 @@
 <script lang="ts">
+	import { goto } from '@sapper/app';
+
 	export let status: number;
 	export let error: Error;
 
-	const dev = process.env.NODE_ENV === 'development';
+	function goHome() {
+		goto('');
+	}
 </script>
 
 <style>
-	h1, p {
-		margin: 0 auto;
+	.box {
+		border: 1px solid #3c3c3c;
+		max-width: 21rem;
+		padding: 1rem;
+		margin: auto;
+		text-align: center;
 	}
+	.box > * {
 
-	h1 {
-		font-size: 2.8em;
-		font-weight: 700;
-		margin: 0 0 0.5em 0;
+		background-color: #3c3c3c;
+		line-height: 1.5rem;
+		color: rgb(214, 202, 202);
+		border: none;
+		margin: 0.5rem 0;
 	}
-
-	p {
-		margin: 1em auto;
-	}
-
-	@media (min-width: 480px) {
-		h1 {
-			font-size: 4em;
-		}
+	.box p {
+		background: none;
+		font-size: medium;
+		font-weight: bold;
+		margin: 0;
 	}
 </style>
 
 <svelte:head>
 	<title>{status}</title>
 </svelte:head>
-
-<h1>{status}</h1>
-
-<p>{error.message}</p>
-
-{#if dev && error.stack}
-	<pre>{error.stack}</pre>
-{/if}
+<div on:click="{goHome}" class="box">
+	<p>{status}</p>
+	<div>{error.message}</div>
+</div>

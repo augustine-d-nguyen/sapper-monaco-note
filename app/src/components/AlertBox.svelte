@@ -8,7 +8,7 @@
         show(msg, '#93C993');
     }
     export function err(msg: string) {
-        show(msg, '#7f0000');
+        show(msg, '#ff6666');
     }
 
     function show(msg: string, color: string) {

@@ -17,4 +17,7 @@ if (typeof window === 'undefined' && !firebase.apps.length) {
 	}
 }
 const database = firebase.firestore();
+database.settings({
+	ignoreUndefinedProperties: true,
+});
 export { database }
