@@ -17,17 +17,17 @@ export async function post(req: Request, res: Response, next: () => void) {
     if (data.privacy === 'Private') {
         // console.log(`${pwd} = ${data.pwd}`);
         if (pwd === data.pwd) {
-            res.end(JSON.stringify({ ndata: data.ndata }));
+            res.end(JSON.stringify(data));
         } else {
             res.status(403).end(JSON.stringify({ message: 'Wrong credentials!' }))
         }
     } else {
-        res.end(JSON.stringify({ ndata: data.ndata }));
+        res.end(JSON.stringify(data));
     }
 }
 
 export async function put(req: Request, res: Response, next: () => void) {
-    const { pid, ndata, privacy, pwd } = req.body;
+    const { pid, ndata, privacy, pwd, lang } = req.body;
     // console.log(req.body);
 
     const noteRef = database.collection('notes').doc(pid);
@@ -38,7 +38,8 @@ export async function put(req: Request, res: Response, next: () => void) {
         await noteRef.set({
             ndata: ndata,
             privacy: privacy,
-            pwd: pwd
+            pwd: pwd,
+            lang: lang
         });
         res.end(JSON.stringify({ message: 'Saved!' }));
         return;
@@ -49,7 +50,8 @@ export async function put(req: Request, res: Response, next: () => void) {
         await noteRef.set({
             ndata: ndata,
             privacy: privacy,
-            pwd: pwd
+            pwd: pwd,
+            lang: lang
         });
         res.end(JSON.stringify({ message: 'Saved!' }));
     } else {

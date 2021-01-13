@@ -26,7 +26,7 @@
 <script lang="ts">
 	import md5 from 'md5';
 	import { onMount } from 'svelte';
-	import { stores } from '@sapper/app';
+	import { stores, goto } from '@sapper/app';
 	import AlertBox from '../../components/AlertBox.svelte';
 	import SaveBox from '../../components/SaveBox.svelte';
 
@@ -46,9 +46,15 @@
 
 	onMount(async () => {
 		monaco = await import('monaco-editor');
+		if (!data) {
+			data = {
+				ndata: '',
+				lang: 'plaintext'
+			}
+		}
 		let options: monaco.editor.IStandaloneEditorConstructionOptions = {
 			value: data.ndata,
-			language: "plaintext",
+			language: data.lang,
 			lineNumbers: "on",
 			roundedSelection: false,
 			scrollBeyondLastLine: false,
@@ -75,6 +81,13 @@
 			contextMenuOrder: '0',
 			run: openSaver
 		});
+		editor.addAction({
+			id: "go-to-home",
+			label: "Home",
+			contextMenuGroupId: 'navigation',
+			contextMenuOrder: '0',
+			run: () => goto('')
+		});
 		// - Get position of context menu
 		editor.onContextMenu((e) => {
 			showSaver = false;
@@ -96,13 +109,15 @@
 		let pid = $session.pid;
 		let pwd = '';
 		let privacy = event.detail.privacy;
+		let lang = editor.getModel().getModeId();
+		// console.log(lang);
 		if (oldPrivacy !== 'Public' || privacy !== 'Public') {
 			pwd = md5(event.detail.pwd);
 		}
 		const res = await fetch(`note.json`, {
 			method: 'PUT',
             credentials: 'same-origin',
-            body: JSON.stringify({ pid, pwd, privacy, ndata }),
+            body: JSON.stringify({ pid, pwd, privacy, ndata, lang }),
             headers: {
                 'Content-Type': 'application/json'
             }
