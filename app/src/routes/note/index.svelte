@@ -139,7 +139,7 @@
 	}
 </style>
 <svelte:head>
-	<title>olO Note</title>
+	<title>olO NOTE</title>
 </svelte:head>
 {#if showSaver}
 	<SaveBox bind:this={saver} on:submit={saveNote} privacy={oldPrivacy} pos={contextPos}/>

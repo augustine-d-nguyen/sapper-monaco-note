@@ -31,39 +31,50 @@
 <style>
 	.box {
 		border: 1px solid #3c3c3c;
-		max-width: 21rem;
-		padding: 1rem;
+		max-width: min-content;
+		width: auto;
+		padding: 1.5rem 3rem;
 		margin: auto;
 		text-align: center;
 	}
 	.box > * {
-
-		background-color: #3c3c3c;
+		box-sizing: border-box;
+		box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        -webkit-box-sizing: border-box;
 		line-height: 1.5rem;
+		height: 1.75rem;
+		background-color: #3c3c3c;
 		color: rgb(214, 202, 202);
 		border: none;
 		margin: 0.5rem 0;
-	}
-	.box input {
-		max-width: 12rem;
-	}
-	.box p {
-		background: none;
-		font-size: medium;
-		font-weight: bold;
-		margin: 0;
+		max-width: 14rem;
+		width: 14rem;
+		padding: 0 1rem;
 	}
 	.box button {
-		max-width: 3rem;
+		padding: 0;
+	}
+	.box button:hover {
+		background-color: #2c2c2c;
+	}
+	.box button:disabled {
+		background-color: #1e1e1e;
+		color:#3c3c3c;
+		border: 1px solid #3c3c3c;
+	}
+	.box object {
+		background-color: unset;
+		height: auto;
 	}
 </style>
 
 <svelte:head>
-	<title>olO Note</title>
+	<title>olO NOTE</title>
 </svelte:head>
 
 <div class="box">
-	<p>olO Note</p>
+	<object data="olonote-text.svg" type="image/svg+xml" title="olonote with text"></object>
 	<input bind:value={noteName}
 		type="password"
 		style="display: {showPWD ? 'none': 'inline-block'}"
@@ -72,5 +83,5 @@
 		type="password"
 		style="display: {showPWD ? 'inline-block': 'none'}"
 		placeholder="Enter your private code."/>
-	<button disabled={ showPWD && !notePWD || !showPWD && !noteName } on:click={checkPrivacy}>Open</button>
+	<button disabled={ showPWD && !notePWD || !showPWD && !noteName } on:click={checkPrivacy}>OPEN</button>
 </div>

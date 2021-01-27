@@ -48,7 +48,12 @@
         padding: 1px 2px;
     }
     .box button {
-        max-width: 3rem;
+        max-width: 6rem;
+        width: 6rem;
+    }
+    .box button:disabled {
+        color: rgb(88, 88, 88);
+        border: 1px solid rgb(88, 88, 88);
     }
 </style>
 
